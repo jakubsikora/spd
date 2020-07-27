@@ -1,1 +1,10 @@
-{"tfjsVersion":"1.3.1","tmVersion":"0.8.6","packageVersion":"0.8.6","packageName":"@teachablemachine/pose","timeStamp":"2020-07-27T08:52:08.172Z","userMetadata":{},"modelName":"my-pose-model","labels":["yes","no","idle"],"modelSettings":{"posenet":{"architecture":"MobileNetV1","outputStride":16,"inputResolution":257,"multiplier":0.75}}}
+{
+  "tfjsVersion": "1.3.1",
+  "tmVersion": "2.2.2",
+  "packageVersion": "0.8.4",
+  "packageName": "@teachablemachine/image",
+  "timeStamp": "2020-07-27T09:41:39.665Z",
+  "userMetadata": {},
+  "modelName": "tm-my-image-model",
+  "labels": ["yes", "no", "none", "left", "right"]
+}
