@@ -212,9 +212,10 @@
       }
 
       window.onMomentAsyncInit = function (createMomentsSDK) {
-        createMomentsSDK({ title: "My App" }).then((momentsSDK) => {
+        console.log("here");
+        createMomentsSDK({ title: "My App" }).then(() => {
           console.log(window.MomentsSDK);
-          init();
+          // init();
           //window.MomentsSDK.sendMessage({ text: "yes" });
           // your code
         });
