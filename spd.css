@@ -12,7 +12,6 @@
 .loader-wrapper {
   display: flex;
   margin: 0;
-  height: 50px;
 }
 
 .confirmation-wrapper {
@@ -31,8 +30,8 @@
 }
 
 #webcam-container {
-  width: 200px;
-  height: 200px;
+  width: 150px;
+  height: 150px;
   display: block;
   overflow: hidden;
   border-radius: 8px;
