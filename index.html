@@ -32,40 +32,52 @@
     <button type="button" onclick="init()">Start</button> -->
 
     <div class="container">
-      <div id="webcam-container"></div>
-      <div id="label-container"></div>
+      <div class="lc-loader-wrapper" id="main-loader" style="height: 200px;">
+        <div class="lc-loader-spinner-wrapper lc-loader-spinner-wrapper--large">
+          <div class="lc-loader-spinner lc-loader-spinner--thick"></div>
+        </div>
+      </div>
 
-      <div class="welcome-question" id="welcome-question">
+      <div id="webcam-container" style="display: none;"></div>
+      <div id="label-container" style="display: none;"></div>
+
+      <div
+        class="welcome-question"
+        id="welcome-question"
+        style="display: none;"
+      >
         <h3>What are you interested in?</h3>
         <div class="btn-wrapper btn-question" id="btn-question">
-          <button type="button" id="btn-presctiption" class="lc-btn">
+          <button type="button" id="btn-left" class="lc-btn">
             Prescription
           </button>
-          <button type="button" id="btn-treatment" class="lc-btn">
+          <button type="button" id="btn-right" class="lc-btn">
             Treatment
           </button>
         </div>
         <hr />
       </div>
 
-      <div class="loader-wrapper" id="loading-wrapper">
+      <div class="loader-wrapper" id="loading-wrapper" style="display: none;">
         <div class="lc-loader-wrapper">
           <div
             class="lc-loader-spinner-wrapper lc-loader-spinner-wrapper--small"
           >
             <div class="lc-loader-spinner lc-loader-spinner--thin"></div>
           </div>
-          <div class="lc-loader-label" id="loading">Loading...</div>
+          <div class="lc-loader-label" id="loading"></div>
         </div>
       </div>
 
-      <div class="confirmation-wrapper" id="confirmation-wrapper">
-        <h3>Would you like to send it?</h3>
-      </div>
+      <div id="yesno-wrapper" class="yesno-wrapper">
+        <div class="confirmation-wrapper">
+          <h3>Would you like to send it?</h3>
+        </div>
 
-      <div class="btn-wrapper" id="btn-wrapper">
-        <button type="button" id="btn-yes" class="lc-btn">Yes</button>
-        <button type="button" id="btn-no" class="lc-btn">No</button>
+        <div class="btn-wrapper" id="btn-wrapper">
+          <button type="button" id="btn-yes" class="lc-btn">Yes</button>
+          <button type="button" id="btn-no" class="lc-btn">No</button>
+        </div>
       </div>
 
       <div class="thank-you" id="thank-you">
@@ -86,19 +98,22 @@
       let model, webcam, labelContainer, maxPredictions;
       let currentPrediction;
       let currentTimerId;
+      let currentTimerId1;
       let widgetLoaded = false;
+      let firstQuestion;
+      let firstQuestionSelected;
+      let sent = false;
 
-      // Set the date we're counting down to
-      const startTimer = () => {
-        if (currentTimerId) {
-          clearInterval(currentTimerId);
+      const startTimerFirst = () => {
+        if (currentTimerId1) {
+          clearInterval(currentTimerId1);
         }
 
         const countDownDate = new Date();
-        countDownDate.setSeconds(countDownDate.getSeconds() + 4);
+        countDownDate.setSeconds(countDownDate.getSeconds() + 5);
 
         // Update the count down every 1 second
-        currentTimerId = setInterval(function () {
+        currentTimerId1 = setInterval(function () {
           // Get today's date and time
           const now = new Date().getTime();
 
@@ -113,25 +128,54 @@
 
           // If the count down is finished, write some text
           if (distance < 0) {
+            clearInterval(currentTimerId1);
+            firstQuestionSelected = true;
+            document.getElementById("yesno-wrapper").style.display = "block";
+          }
+        }, 800);
+      };
+
+      // Set the date we're counting down to
+      const startTimer = () => {
+        if (currentTimerId) {
+          clearInterval(currentTimerId);
+        }
+
+        const countDownDate = new Date();
+        countDownDate.setSeconds(countDownDate.getSeconds() + 5);
+
+        // Update the count down every 1 second
+        currentTimerId = setInterval(function () {
+          // Get today's date and time
+          const now = new Date().getTime();
+
+          // Find the distance between now and the count down date
+          const distance = countDownDate.getTime() - now;
+
+          // Time calculations for days, hours, minutes and seconds
+          const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+          console.log("seconds", seconds);
+
+          // If the count down is finished, write some text
+          if (distance < 0) {
+            sent = true;
             clearInterval(currentTimerId);
 
-            window.MomentsSDK.sendMessage({ text: currentPrediction });
-
             document.getElementById("loading-wrapper").style.display = "none";
+            document.getElementById("thank-you").style.display = "block";
+            document.getElementById("welcome-question").style.display = "none";
+            document.getElementById("yesno-wrapper").style.display = "none";
+            document.getElementById("webcam-container").style.display = "none";
+            document.getElementById("label-container").style.display = "none";
 
-            document.getElementById("confirmation-wrapper").style.display =
-              "flex";
-            document.getElementById(
-              "confirmation-wrapper"
-            ).innerText = `Message has been sent`;
+            window.MomentsSDK.sendMessage({ text: currentPrediction });
           } else {
             document.getElementById("loading-wrapper").style.display = "flex";
-            document.getElementById("confirmation-wrapper").style.display =
-              "none";
 
             document.getElementById(
               "loading"
-            ).innerText = `Sending ${currentPrediction} in ${seconds}s`;
+            ).innerText = `Sending in ${seconds}s`;
           }
         }, 800);
       };
@@ -153,11 +197,12 @@
         await webcam.play();
         window.requestAnimationFrame(loop);
         // append elements to the DOM
+        document.getElementById("main-loader").style.display = "none";
         document.getElementById("loading-wrapper").style.display = "none";
-        document.getElementById("confirmation-wrapper").style.display = "flex";
-        document.getElementById("confirmation-wrapper").innerText =
-          "Waiting for answer...";
         document.getElementById("btn-wrapper").style.display = "block";
+        document.getElementById("webcam-container").style.display = "block";
+        document.getElementById("label-container").style.display = "block";
+        document.getElementById("welcome-question").style.display = "block";
         document.getElementById("webcam-container").appendChild(webcam.canvas);
         labelContainer = document.getElementById("label-container");
         for (let i = 0; i < maxPredictions; i++) {
@@ -167,9 +212,53 @@
       }
       async function loop() {
         webcam.update(); // update the webcam frame
-        await predict();
+        if (!sent) await predict();
         window.requestAnimationFrame(loop);
       }
+
+      const resetYes = () => {
+        document.getElementById("btn-yes").classList.remove("lc-btn--primary");
+      };
+
+      const activateYes = () => {
+        document.getElementById("btn-yes").classList.add("lc-btn--primary");
+        resetNo();
+      };
+
+      const resetNo = () => {
+        document.getElementById("btn-no").classList.remove("lc-btn--primary");
+      };
+
+      const activateNo = () => {
+        document.getElementById("btn-no").classList.add("lc-btn--primary");
+        resetYes();
+      };
+
+      const resetAll = () => {
+        resetYes();
+        resetNo();
+      };
+
+      const activateLeft = () => {
+        document.getElementById("btn-left").classList.add("lc-btn--primary");
+        resetRight();
+      };
+
+      const resetLeft = () => {
+        document.getElementById("btn-left").classList.remove("lc-btn--primary");
+      };
+
+      const activateRight = () => {
+        document.getElementById("btn-right").classList.add("lc-btn--primary");
+        resetLeft();
+      };
+
+      const resetRight = () => {
+        document
+          .getElementById("btn-right")
+          .classList.remove("lc-btn--primary");
+      };
+
       // run the webcam image through the image model
       async function predict() {
         // predict can take in an image, video or canvas html element
@@ -187,45 +276,51 @@
           predictions[prediction[i].className] = prediction[i].probability;
         }
 
-        if (
-          predictions.none > 0.7 ||
-          (predictions.none > predictions.yes &&
-            predictions.none > predictions.no)
-        ) {
-          clearInterval(currentTimerId);
-          currentPrediction = "none";
-          document
-            .getElementById("btn-yes")
-            .classList.remove("lc-btn--primary");
-          document.getElementById("btn-no").classList.remove("lc-btn--primary");
-          document.getElementById("loading-wrapper").style.display = "none";
-          document.getElementById("confirmation-wrapper").style.display =
-            "flex";
-          document.getElementById("confirmation-wrapper").innerText =
-            "Waiting for answer...";
-        } else if (
-          predictions.yes > predictions.none &&
-          predictions.yes > predictions.no
-        ) {
-          if (currentPrediction !== "yes") {
-            currentPrediction = "yes";
-            document.getElementById("btn-yes").classList.add("lc-btn--primary");
-            document
-              .getElementById("btn-no")
-              .classList.remove("lc-btn--primary");
-            startTimer();
+        if (firstQuestion && firstQuestionSelected) {
+          if (
+            predictions.none > 0.7 ||
+            (predictions.none > predictions.yes &&
+              predictions.none > predictions.no)
+          ) {
+            clearInterval(currentTimerId);
+            currentPrediction = "none";
+            resetAll();
+            document.getElementById("loading-wrapper").style.display = "none";
+          } else if (
+            predictions.yes > predictions.none &&
+            predictions.yes > predictions.no
+          ) {
+            if (currentPrediction !== "yes") {
+              currentPrediction = "yes";
+              activateYes();
+              startTimer();
+            }
+          } else if (
+            predictions.no > predictions.none &&
+            predictions.no > predictions.yes
+          ) {
+            if (currentPrediction !== "no") {
+              currentPrediction = "no";
+              activateNo();
+              startTimer();
+            }
           }
-        } else if (
-          predictions.no > predictions.none &&
-          predictions.no > predictions.yes
-        ) {
-          if (currentPrediction !== "no") {
-            currentPrediction = "no";
-            document.getElementById("btn-no").classList.add("lc-btn--primary");
-            document
-              .getElementById("btn-yes")
-              .classList.remove("lc-btn--primary");
-            startTimer();
+        } else {
+          if (predictions.left > 0.2 && predictions.left > predictions.right) {
+            if (firstQuestion !== "left") {
+              firstQuestion = "left";
+              activateLeft();
+              startTimerFirst();
+            }
+          } else if (
+            predictions.right > 0.2 &&
+            predictions.left < predictions.right
+          ) {
+            if (firstQuestion !== "right") {
+              firstQuestion = "right";
+              activateRight();
+              startTimerFirst();
+            }
           }
         }
       }

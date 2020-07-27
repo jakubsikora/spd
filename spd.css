@@ -6,6 +6,7 @@
 
 .btn-wrapper {
   display: none;
+  text-align: center;
 }
 
 .loader-wrapper {
@@ -15,36 +16,44 @@
 }
 
 .confirmation-wrapper {
-  display: none;
+  display: flex;
   margin: 20px 0;
   height: 80px;
 }
 
+.yesno-wrapper {
+  display: none;
+}
+
 .welcome-question,
-.btn-wrapper.btn-question{
-	display: block;
+.btn-wrapper.btn-question {
+  display: block;
 }
 
-#webcam-container{
-	width: 200px;
-	height: 200px;
-	display:block;
-	overflow: hidden;
-	border-radius: 8px;
+#webcam-container {
+  width: 200px;
+  height: 200px;
+  display: block;
+  overflow: hidden;
+  border-radius: 8px;
 }
 
-.thank-you img{
-	display: block;
-	border-radius: 8px;
+.thank-you {
+  display: none;
 }
 
-#thank-you{
-	text-align: center;
+.thank-you img {
+  display: block;
+  border-radius: 8px;
 }
 
-hr{
-	border: 0;
-	height: 1px;
-	background: #CCCCCF;
-	margin: 20px 0;	
+#thank-you {
+  text-align: center;
+}
+
+hr {
+  border: 0;
+  height: 1px;
+  background: #cccccf;
+  margin: 20px 0;
 }
