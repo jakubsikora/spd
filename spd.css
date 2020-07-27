@@ -19,3 +19,32 @@
   margin: 20px 0;
   height: 80px;
 }
+
+.welcome-question,
+.btn-wrapper.btn-question{
+	display: block;
+}
+
+#webcam-container{
+	width: 200px;
+	height: 200px;
+	display:block;
+	overflow: hidden;
+	border-radius: 8px;
+}
+
+.thank-you img{
+	display: block;
+	border-radius: 8px;
+}
+
+#thank-you{
+	text-align: center;
+}
+
+hr{
+	border: 0;
+	height: 1px;
+	background: #CCCCCF;
+	margin: 20px 0;	
+}
