@@ -11,14 +11,14 @@
 
 .loader-wrapper {
   display: flex;
-  margin: 20px 0;
-  height: 80px;
+  margin: 0;
+  height: 50px;
 }
 
 .confirmation-wrapper {
   display: flex;
-  margin: 20px 0;
-  height: 80px;
+  margin: 10px 0;
+  height: 50px;
 }
 
 .yesno-wrapper {
